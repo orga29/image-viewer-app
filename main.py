@@ -6,7 +6,7 @@ from viewer_window import ViewerWindow
 
 def main():
     app = QApplication(sys.argv)
-    app.setApplicationName("Picasa Clone Viewer")
+    app.setApplicationName("Fast Image Viewer")
 
     window = ViewerWindow()
     window.show()
@@ -16,7 +16,6 @@ def main():
         target_path = sys.argv[1]
         if os.path.exists(target_path):
             window.open_target(target_path)
-    # 引数がない場合は、ダイアログを自動表示せずドラッグ＆ドロップ待機画面として立ち上げる
 
     sys.exit(app.exec())
 

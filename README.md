@@ -1,6 +1,6 @@
-# 🖼️ Picasa Clone Viewer (PyQt6)
+# 🖼️ Fast Image Viewer (PyQt6)
 
-Windows 11環境で動作する、軽量・高速なPicasa風フルスクリーン画像ビューアアプリケーションです。  
+Windows 11環境で動作する、Picasa風の直感的な操作感を再現した軽量・高速なフルスクリーン画像ビューアアプリケーションです。  
 矢印キーによるスムーズな画像連続遷移、マウスホイールによるカーソル位置中心の直感的なズーム＆パン操作、画像ごとの独立したズーム記憶機能を提供します。
 
 ---
@@ -59,7 +59,7 @@ python main.py
 
 ```bash
 pip install pyinstaller
-pyinstaller --noconsole --name "PicasaViewer" --clean -y main.py
+pyinstaller --noconsole --name "FastViewer" --clean -y main.py
 ```
 
 ---

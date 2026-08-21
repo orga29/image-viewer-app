@@ -1,9 +1,9 @@
-# Picasa Clone Viewer 仕様書
+# Fast Image Viewer 仕様書
 
 ## 1. プロジェクト概要
 Windows 11環境で動作する、軽量かつ高速な画像ビューアアプリケーション。  
 Picasaのフォトビューアのような操作感を再現し、キーボード（矢印キー）による連続閲覧と、マウスによる直感的なズーム＆パン機能を提供する。  
-最大のコア機能は、**「ズーム状態（倍率とX/Y座標）を維持したまま前後の画像へ遷移できること」**である。
+最大のコア機能は、**「各画像ごとに独立したズーム状態（倍率とX/Y座標）を維持したまま前後の画像へ遷移できること」**である。
 
 ## 2. 操作方法
 - **キーボード操作**:
@@ -31,11 +31,12 @@ image-viewer-app/
 ├── generate_test_images.py # テスト画像生成スクリプト
 ├── test_logic.py        # 自動機能検証テスト
 ├── requirements.txt     # 依存ライブラリ (PyQt6, Pillow, PyInstaller)
+├── FastViewer_Python起動.bat # Python直接起動用バッチ (SAC回避)
 └── dist/
-    └── PicasaViewer/
-        └── PicasaViewer.exe # 生成されたWindows 11実行ファイル
+    └── FastViewer/
+        └── FastViewer.exe # 生成されたWindows 11実行ファイル
 ```
 
 ## 4. アプリ起動・実行方法
-- **ビルド済み .exe の実行**: `dist/PicasaViewer/PicasaViewer.exe` をダブルクリック
-- **Python スクリプトからの実行**: `python main.py`
+- **推奨バッチ実行**: `FastViewer_Python起動.bat` をダブルクリック
+- **ビルド済み .exe の実行**: `dist/FastViewer/FastViewer.exe` をダブルクリック
