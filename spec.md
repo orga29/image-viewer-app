@@ -31,12 +31,12 @@ image-viewer-app/
 ├── generate_test_images.py # テスト画像生成スクリプト
 ├── test_logic.py        # 自動機能検証テスト
 ├── requirements.txt     # 依存ライブラリ (PyQt6, Pillow, PyInstaller)
-├── FastViewer_Python起動.bat # Python直接起動用バッチ (SAC回避)
+├── FastViewer起動.bat  # 高速exe直接起動用バッチファイル
 └── dist/
     └── FastViewer/
         └── FastViewer.exe # 生成されたWindows 11実行ファイル
 ```
 
 ## 4. アプリ起動・実行方法
-- **推奨バッチ実行**: `FastViewer_Python起動.bat` をダブルクリック
-- **ビルド済み .exe の実行**: `dist/FastViewer/FastViewer.exe` をダブルクリック
+- **推奨バッチ実行**: `FastViewer起動.bat` をダブルクリック（`dist/FastViewer/FastViewer.exe` をダイレクト起動）
+- **ビルド済み .exe の直接実行**: `dist/FastViewer/FastViewer.exe` をダブルクリック
