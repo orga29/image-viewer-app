@@ -88,8 +88,24 @@ class ViewerWindow(QMainWindow):
         if self.file_manager.get_total_count() > 0:
             self._update_overlay_info(zoom_pct=zoom_pct)
 
+    def _get_current_screen(self):
+        """ウィンドウが現在置かれているディスプレイ（QScreen）を動的に取得 (マルチモニター対応)"""
+        # 1. 自身の screen()
+        screen = self.screen()
+        if screen:
+            return screen
+
+        # 2. ウィンドウ中心座標が属する screen
+        center_pt = self.geometry().center()
+        screen = QApplication.screenAt(center_pt)
+        if screen:
+            return screen
+
+        # 3. フォールバック
+        return QApplication.primaryScreen()
+
     def _adjust_window_to_image_size(self):
-        """画像の元解像度・アスペクト比に合わせて、通常ウィンドウ表示時のサイズを自動調整し、画面中央に配置"""
+        """画像の元解像度・アスペクト比に合わせて、現在表示中のモニター上にウィンドウサイズを自動調整・配置"""
         if self.isFullScreen() or not self.image_view.pixmap_item:
             return
 
@@ -102,7 +118,7 @@ class ViewerWindow(QMainWindow):
         if img_w <= 0 or img_h <= 0:
             return
 
-        screen = QApplication.primaryScreen()
+        screen = self._get_current_screen()
         if not screen:
             return
 
@@ -120,7 +136,7 @@ class ViewerWindow(QMainWindow):
 
         self.resize(target_w, target_h)
 
-        # 画面中央に配置
+        # 現在のモニター作業領域の中央に配置
         center_x = avail_geo.x() + (avail_geo.width() - target_w) // 2
         center_y = avail_geo.y() + (avail_geo.height() - target_h) // 2
         self.move(center_x, center_y)
@@ -179,11 +195,14 @@ class ViewerWindow(QMainWindow):
             self._update_overlay_info(zoom_pct=100.0)
 
     def toggle_fullscreen(self):
-        """フルスクリーン表示の切り替え"""
+        """フルスクリーン表示の切り替え (マルチモニター表示位置を維持)"""
+        current_screen = self._get_current_screen()
         if self.isFullScreen():
             self.showNormal()
             self._adjust_window_to_image_size()
         else:
+            if self.windowHandle():
+                self.windowHandle().setScreen(current_screen)
             self.showFullScreen()
 
     def open_file_dialog(self):
@@ -307,7 +326,7 @@ class ViewerWindow(QMainWindow):
         elif key in (Qt.Key.Key_Right, Qt.Key.Key_Space, Qt.Key.Key_PageDown, Qt.Key.Key_D, Qt.Key.Key_L):
             self.show_next_image()
         # 前の画像へ: 左矢印 / PageUp / Backspace / A / K
-        elif key in (Qt.Key.Key_Left, Qt.Key.Key_PageUp, Qt.Key.Key_Backspace, Qt.Key.Key_A, Qt.Key.Key_K):
+        elif key in (Qt.Key.Key_Left, Qt.Key.Key_Backspace, Qt.Key.Key_PageUp, Qt.Key.Key_A, Qt.Key.Key_K):
             self.show_prev_image()
         elif key in (Qt.Key.Key_F5, Qt.Key.Key_R, Qt.Key.Key_0):
             self.reset_current_view()
