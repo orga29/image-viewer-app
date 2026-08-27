@@ -2,7 +2,7 @@ import os
 from typing import Optional, Tuple, Dict, Any
 
 from PyQt6.QtCore import Qt, QPointF, QRectF, pyqtSignal
-from PyQt6.QtGui import QPixmap, QTransform, QWheelEvent, QMouseEvent, QKeyEvent, QPainter, QDragEnterEvent, QDragMoveEvent, QDropEvent
+from PyQt6.QtGui import QPixmap, QTransform, QWheelEvent, QMouseEvent, QKeyEvent, QPainter, QDragEnterEvent, QDragMoveEvent, QDropEvent, QContextMenuEvent
 from PyQt6.QtWidgets import QGraphicsView, QGraphicsScene, QGraphicsPixmapItem
 
 
@@ -208,9 +208,6 @@ class ImageView(QGraphicsView):
         if not self.pixmap_item:
             return
 
-        zoom_in_factor = 1.15
-        zoom_out_factor = 1.0 / zoom_in_factor
-
         if event.angleDelta().y() > 0:
             self.zoom_in()
         else:
@@ -229,6 +226,14 @@ class ImageView(QGraphicsView):
 
     def keyPressEvent(self, event: QKeyEvent):
         event.ignore()
+
+    def contextMenuEvent(self, event: QContextMenuEvent):
+        """右クリックコンテキストメニューを親ウィンドウに委譲"""
+        parent_window = self.window()
+        if hasattr(parent_window, "show_context_menu"):
+            parent_window.show_context_menu(event.globalPos())
+        else:
+            super().contextMenuEvent(event)
 
     def dragEnterEvent(self, event: QDragEnterEvent):
         if event.mimeData().hasUrls():

@@ -1,9 +1,9 @@
 import os
 from typing import Optional
 
-from PyQt6.QtCore import Qt, QTimer
-from PyQt6.QtGui import QKeyEvent, QDragEnterEvent, QDragMoveEvent, QDropEvent
-from PyQt6.QtWidgets import QMainWindow, QFileDialog, QLabel, QApplication
+from PyQt6.QtCore import Qt, QTimer, QPoint
+from PyQt6.QtGui import QKeyEvent, QDragEnterEvent, QDragMoveEvent, QDropEvent, QAction
+from PyQt6.QtWidgets import QMainWindow, QFileDialog, QLabel, QApplication, QMenu
 
 from file_manager import FileManager
 from image_view import ImageView
@@ -12,7 +12,7 @@ from image_view import ImageView
 class ViewerWindow(QMainWindow):
     """
     フルスクリーン画像ビューアのメインウィンドウ。
-    キーボードイベント、ファイルの連続読み込み、オーバーレイ情報表示を制御する。
+    キーボードイベント、ファイルの連続読み込み、オーバーレイ情報表示およびコンテキストメニューを制御する。
     """
 
     def __init__(self):
@@ -33,7 +33,7 @@ class ViewerWindow(QMainWindow):
 
         # 中央ガイドラベル (画像未読込時の待機メッセージ)
         self.guide_label = QLabel(self)
-        self.guide_label.setText("画像をドラッグ＆ドロップ\nまたは [ O ] キーでファイルを開く")
+        self.guide_label.setText("画像をドラッグ＆ドロップ\nまたは [ O ] キー / 右クリックでファイルを開く")
         self.guide_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.guide_label.setStyleSheet("""
             QLabel {
@@ -132,6 +132,19 @@ class ViewerWindow(QMainWindow):
                 self.image_view.restore_view_state(prev_file)
                 self._update_overlay_info()
 
+    def reset_current_view(self):
+        """現在の画像のズームと表示位置をリセット"""
+        if self.file_manager.get_total_count() > 0:
+            self.image_view.fit_to_view(reset_saved_state=True)
+            self._update_overlay_info(zoom_pct=100.0)
+
+    def toggle_fullscreen(self):
+        """フルスクリーン表示の切り替え"""
+        if self.isFullScreen():
+            self.showNormal()
+        else:
+            self.showFullScreen()
+
     def open_file_dialog(self):
         """ファイル選択ダイアログを開く"""
         file_path, _ = QFileDialog.getOpenFileName(
@@ -142,6 +155,61 @@ class ViewerWindow(QMainWindow):
         )
         if file_path:
             self.open_target(file_path)
+
+    def show_context_menu(self, global_pos: QPoint):
+        """右クリックポップアップメニューを表示"""
+        menu = QMenu(self)
+        menu.setStyleSheet("""
+            QMenu {
+                background-color: #26262B;
+                color: #EEEEEE;
+                border: 1px solid #44444D;
+                border-radius: 8px;
+                padding: 6px;
+                font-size: 14px;
+                font-family: 'Segoe UI', sans-serif;
+            }
+            QMenu::item {
+                padding: 8px 24px;
+                border-radius: 4px;
+            }
+            QMenu::item:selected {
+                background-color: #3D3D45;
+                color: #FFFFFF;
+            }
+            QMenu::separator {
+                height: 1px;
+                background-color: #44444D;
+                margin: 6px 4px;
+            }
+        """)
+
+        # アクションの追加
+        open_action = QAction("📂  ファイルを開く (O)...", self)
+        open_action.triggered.connect(self.open_file_dialog)
+        menu.addAction(open_action)
+
+        menu.addSeparator()
+
+        reset_action = QAction("🔄  ズーム・表示位置をリセット (F5 / R)", self)
+        reset_action.triggered.connect(self.reset_current_view)
+        menu.addAction(reset_action)
+
+        fullscreen_action = QAction("🖥️  フルスクリーン表示切り替え (F11)", self)
+        fullscreen_action.triggered.connect(self.toggle_fullscreen)
+        menu.addAction(fullscreen_action)
+
+        menu.addSeparator()
+
+        quit_action = QAction("❌  アプリを終了 (Esc / Alt+F4)", self)
+        quit_action.triggered.connect(QApplication.quit)
+        menu.addAction(quit_action)
+
+        menu.exec(global_pos)
+
+    def contextMenuEvent(self, event):
+        """メインウィンドウ上の右クリックイベントハンドラ"""
+        self.show_context_menu(event.globalPos())
 
     def _update_overlay_info(self, zoom_pct: Optional[float] = None):
         """現在の画像情報および倍率を画面左下に浮き上がらせて表示"""
@@ -201,16 +269,11 @@ class ViewerWindow(QMainWindow):
         elif key in (Qt.Key.Key_Left, Qt.Key.Key_PageUp, Qt.Key.Key_Backspace, Qt.Key.Key_A, Qt.Key.Key_K):
             self.show_prev_image()
         elif key in (Qt.Key.Key_F5, Qt.Key.Key_R, Qt.Key.Key_0):
-            if self.file_manager.get_total_count() > 0:
-                self.image_view.fit_to_view(reset_saved_state=True)
-                self._update_overlay_info(zoom_pct=100.0)
+            self.reset_current_view()
         elif key == Qt.Key.Key_O:
             self.open_file_dialog()
         elif key == Qt.Key.Key_F11:
-            if self.isFullScreen():
-                self.showNormal()
-            else:
-                self.showFullScreen()
+            self.toggle_fullscreen()
         elif key == Qt.Key.Key_Escape:
             if self.isFullScreen():
                 self.showNormal()
@@ -238,7 +301,7 @@ class ViewerWindow(QMainWindow):
             if file_path:
                 if os.name == "nt" and file_path.startswith("/") and len(file_path) > 2 and file_path[2] == ":":
                     file_path = file_path[1:]
-                
+
                 file_path = os.path.normpath(file_path)
                 if os.path.exists(file_path):
                     event.acceptProposedAction()
