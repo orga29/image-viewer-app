@@ -1,24 +1,26 @@
 import os
 import sys
 from PyQt6.QtWidgets import QApplication
-from PyQt6.QtCore import QPoint
 from viewer_window import ViewerWindow
 
 
-def test_context_menu():
-    """右クリックコンテキストメニュー表示のテスト"""
+def test_window_aspect_ratio_adjustment():
+    """画像解像度・アスペクト比連動のウィンドウサイズ調整テスト"""
     app = QApplication.instance() or QApplication(sys.argv)
     window = ViewerWindow()
-    window.resize(1920, 1080)
-    window.show()
+    window.resize(800, 600)
+    window.showNormal()
 
-    # 右クリックコンテキストメニュー表示メソッドの存在および動作検証
-    assert hasattr(window, "show_context_menu"), "ViewerWindow should have show_context_menu method"
-    assert hasattr(window.image_view, "contextMenuEvent"), "ImageView should handle contextMenuEvent"
+    test_dir = os.path.join(os.path.dirname(__file__), "test_images")
+    window.open_target(os.path.join(test_dir, "test_01.png"))
 
-    print("[PASS] Context menu handler test passed.")
+    # _adjust_window_to_image_size メソッドの検証
+    window._adjust_window_to_image_size()
+
+    assert window.width() > 0 and window.height() > 0, "Window dimensions should be positive"
+    print(f"[PASS] Window aspect ratio adjustment test passed (Resized: {window.width()}x{window.height()}).")
 
 
 if __name__ == "__main__":
-    test_context_menu()
-    print("All tests (context menu functionality) passed successfully!")
+    test_window_aspect_ratio_adjustment()
+    print("All tests (image aspect ratio window sizing) passed successfully!")

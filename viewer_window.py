@@ -88,6 +88,43 @@ class ViewerWindow(QMainWindow):
         if self.file_manager.get_total_count() > 0:
             self._update_overlay_info(zoom_pct=zoom_pct)
 
+    def _adjust_window_to_image_size(self):
+        """画像の元解像度・アスペクト比に合わせて、通常ウィンドウ表示時のサイズを自動調整し、画面中央に配置"""
+        if self.isFullScreen() or not self.image_view.pixmap_item:
+            return
+
+        pixmap = self.image_view.pixmap_item.pixmap()
+        if pixmap.isNull():
+            return
+
+        img_w = pixmap.width()
+        img_h = pixmap.height()
+        if img_w <= 0 or img_h <= 0:
+            return
+
+        screen = QApplication.primaryScreen()
+        if not screen:
+            return
+
+        avail_geo = screen.availableGeometry()
+        max_w = int(avail_geo.width() * 0.85)
+        max_h = int(avail_geo.height() * 0.85)
+
+        # アスペクト比を維持した最適なウィンドウターゲットサイズを算出
+        scale_w = max_w / img_w
+        scale_h = max_h / img_h
+        scale = min(scale_w, scale_h, 1.0)  # 画像が画面より小さい場合は拡大せずそのままの解像度に合わせる
+
+        target_w = max(400, int(img_w * scale))
+        target_h = max(300, int(img_h * scale))
+
+        self.resize(target_w, target_h)
+
+        # 画面中央に配置
+        center_x = avail_geo.x() + (avail_geo.width() - target_w) // 2
+        center_y = avail_geo.y() + (avail_geo.height() - target_h) // 2
+        self.move(center_x, center_y)
+
     def open_target(self, path: str):
         """
         ファイルまたはディレクトリのパスを受け取り、同フォルダの画像を読み込んで表示する。
@@ -102,6 +139,7 @@ class ViewerWindow(QMainWindow):
                 self.image_view.load_image(current_file)
                 self.image_view.restore_view_state(current_file)
                 self.guide_label.hide()
+                self._adjust_window_to_image_size()
                 self._update_overlay_info()
 
         # キーボードフォーカスを固定
@@ -118,6 +156,7 @@ class ViewerWindow(QMainWindow):
         if next_file:
             if self.image_view.load_image(next_file):
                 self.image_view.restore_view_state(next_file)
+                self._adjust_window_to_image_size()
                 self._update_overlay_info()
 
     def show_prev_image(self):
@@ -130,6 +169,7 @@ class ViewerWindow(QMainWindow):
         if prev_file:
             if self.image_view.load_image(prev_file):
                 self.image_view.restore_view_state(prev_file)
+                self._adjust_window_to_image_size()
                 self._update_overlay_info()
 
     def reset_current_view(self):
@@ -142,6 +182,7 @@ class ViewerWindow(QMainWindow):
         """フルスクリーン表示の切り替え"""
         if self.isFullScreen():
             self.showNormal()
+            self._adjust_window_to_image_size()
         else:
             self.showFullScreen()
 
@@ -277,6 +318,7 @@ class ViewerWindow(QMainWindow):
         elif key == Qt.Key.Key_Escape:
             if self.isFullScreen():
                 self.showNormal()
+                self._adjust_window_to_image_size()
             else:
                 QApplication.quit()
         else:
