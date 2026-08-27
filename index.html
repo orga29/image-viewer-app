@@ -24,8 +24,8 @@
             <nav class="nav-links" id="nav-links">
                 <a href="#features" class="nav-item" id="nav-features">主な特徴</a>
                 <a href="#controls" class="nav-item" id="nav-controls">操作ガイド</a>
-                <a href="#download" class="nav-item" id="nav-download">ダウンロード</a>
-                <a href="https://github.com/orga29/image-viewer-app" target="_blank" rel="noopener" class="btn-github" id="btn-github-nav">GitHub</a>
+                <a href="#newsletter" class="nav-item" id="nav-newsletter">無料メルマガ</a>
+                <a href="#newsletter" class="btn-newsletter-nav" id="btn-newsletter-nav">📩 メルマガ登録</a>
             </nav>
         </div>
     </header>
@@ -43,11 +43,11 @@
                     余計なUIを削ぎ落とした黒背景のフルスクリーン空間。画像ごとの独立したズーム記憶、矢印キー移動、スムーズなドラッグ＆ドロップで、膨大な画像をストレスなく高速閲覧。
                 </p>
                 <div class="hero-actions" id="hero-actions">
-                    <a href="https://github.com/orga29/image-viewer-app/releases" target="_blank" rel="noopener" class="btn-primary" id="btn-download-hero">
-                        <span class="btn-icon">⚡</span> アプリをダウンロード
+                    <a href="#download" class="btn-primary" id="btn-download-hero">
+                        <span class="btn-icon">⚡</span> アプリを入手する
                     </a>
-                    <a href="https://github.com/orga29/image-viewer-app" target="_blank" rel="noopener" class="btn-secondary" id="btn-github-hero">
-                        GitHub リポジトリ
+                    <a href="#newsletter" class="btn-secondary btn-newsletter" id="btn-newsletter-hero">
+                        📩 無料メルマガに登録
                     </a>
                 </div>
             </div>
@@ -155,7 +155,7 @@
                         <tr>
                             <td>キーボード</td>
                             <td><kbd>F11</kbd></td>
-                            <td>フルスクリーン / ウィンドウ表示の切り替え</td>
+                            <td>フルスクリーン / ウィンドウ表示の切り替え (配置モニター位置維持)</td>
                         </tr>
                         <tr>
                             <td>キーボード</td>
@@ -188,15 +188,37 @@
         </div>
     </section>
 
-    <!-- ダウンロードセクション -->
+    <!-- メルマガ購読誘導セクション -->
+    <section class="newsletter-section" id="newsletter">
+        <div class="container">
+            <div class="newsletter-card" id="newsletter-card">
+                <div class="newsletter-icon">💌</div>
+                <h2 class="newsletter-title" id="newsletter-title">無料メルマガで最新情報＆裏技を配信中</h2>
+                <p class="newsletter-desc" id="newsletter-desc">
+                    アプリの最新アップデート情報や、画像管理効率を劇的に高めるプロの活用テクニックを無料でお届けします。いつでもワンクリックで解除可能です。
+                </p>
+                <form class="newsletter-form" id="newsletter-form">
+                    <div class="form-group">
+                        <input type="email" class="email-input" id="email-input" placeholder="メールアドレスを入力 (例: name@example.com)" required>
+                        <button type="submit" class="btn-submit" id="btn-submit">
+                            <span class="btn-text">無料登録する</span>
+                        </button>
+                    </div>
+                    <div class="form-message" id="form-message"></div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- アプリ入手セクション -->
     <section class="download-section" id="download">
         <div class="container">
             <div class="download-card" id="download-card">
-                <h2 class="download-title" id="download-title">今すぐ体験する</h2>
+                <h2 class="download-title" id="download-title">Picasa風 Fast Image Viewer を入手</h2>
                 <p class="download-desc" id="download-desc">インストーラー不要。ダウンロードしてダブルクリックするだけで直ちに動作します。</p>
                 <div class="download-buttons" id="download-buttons">
-                    <a href="https://github.com/orga29/image-viewer-app/releases" target="_blank" rel="noopener" class="btn-primary btn-large" id="btn-download-main">
-                        <span class="btn-icon">⚡</span> Picasa風 Fast Image Viewer を入手
+                    <a href="#newsletter" class="btn-primary btn-large" id="btn-download-main">
+                        <span class="btn-icon">⚡</span> 無料メルマガに登録してアプリを入手
                     </a>
                 </div>
             </div>
@@ -206,10 +228,11 @@
     <!-- フッター -->
     <footer class="footer" id="footer">
         <div class="container footer-content">
-            <p class="copyright" id="copyright">© 2026 Picasa風 Fast Image Viewer (PyQt6 Open Source Project)</p>
+            <p class="copyright" id="copyright">© 2026 Picasa風 Fast Image Viewer Project</p>
             <div class="footer-links" id="footer-links">
-                <a href="https://github.com/orga29/image-viewer-app" target="_blank" rel="noopener">GitHub</a>
-                <a href="https://github.com/orga29/image-viewer-app/blob/main/LICENSE" target="_blank" rel="noopener">MIT License</a>
+                <a href="#features">主な特徴</a>
+                <a href="#controls">操作ガイド</a>
+                <a href="#newsletter">無料メルマガ</a>
             </div>
         </div>
     </footer>
