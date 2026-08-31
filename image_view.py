@@ -203,11 +203,23 @@ class ImageView(QGraphicsView):
 
     def wheelEvent(self, event: QWheelEvent):
         """
-        マウスホイールイベントハンドラ（ズームイン / ズームアウト）
+        マウスホイールイベントハンドラ（ズームイン / ズームアウトおよびチルトホイール画像移動）
         """
         if not self.pixmap_item:
             return
 
+        # チルトホイール（左右スクロール）による画像移動の判定
+        delta_x = event.angleDelta().x()
+        if delta_x != 0:
+            parent_window = self.window()
+            if delta_x > 0 and hasattr(parent_window, "show_next_image"):
+                parent_window.show_next_image()
+            elif delta_x < 0 and hasattr(parent_window, "show_prev_image"):
+                parent_window.show_prev_image()
+            event.accept()
+            return
+
+        # 上下ホイールによるズーム処理
         if event.angleDelta().y() > 0:
             self.zoom_in()
         else:

@@ -322,11 +322,11 @@ class ViewerWindow(QMainWindow):
         # ↓ キー: ズームアウト (縮小)
         elif key == Qt.Key.Key_Down:
             self.image_view.zoom_out()
-        # 次の画像へ: 右矢印 / Space / PageDown / D / L
-        elif key in (Qt.Key.Key_Right, Qt.Key.Key_Space, Qt.Key.Key_PageDown, Qt.Key.Key_D, Qt.Key.Key_L):
+        # 次の画像へ: 右矢印 / Space / PageDown / D / L / End
+        elif key in (Qt.Key.Key_Right, Qt.Key.Key_Space, Qt.Key.Key_PageDown, Qt.Key.Key_D, Qt.Key.Key_L, Qt.Key.Key_End):
             self.show_next_image()
-        # 前の画像へ: 左矢印 / PageUp / Backspace / A / K
-        elif key in (Qt.Key.Key_Left, Qt.Key.Key_Backspace, Qt.Key.Key_PageUp, Qt.Key.Key_A, Qt.Key.Key_K):
+        # 前の画像へ: 左矢印 / PageUp / Backspace / A / K / Home
+        elif key in (Qt.Key.Key_Left, Qt.Key.Key_Backspace, Qt.Key.Key_PageUp, Qt.Key.Key_A, Qt.Key.Key_K, Qt.Key.Key_Home):
             self.show_prev_image()
         elif key in (Qt.Key.Key_F5, Qt.Key.Key_R, Qt.Key.Key_0):
             self.reset_current_view()
