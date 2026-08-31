@@ -2,7 +2,7 @@ import os
 from typing import Optional
 
 from PyQt6.QtCore import Qt, QTimer, QPoint
-from PyQt6.QtGui import QKeyEvent, QDragEnterEvent, QDragMoveEvent, QDropEvent, QAction
+from PyQt6.QtGui import QKeyEvent, QDragEnterEvent, QDragMoveEvent, QDropEvent, QAction, QIcon
 from PyQt6.QtWidgets import QMainWindow, QFileDialog, QLabel, QApplication, QMenu
 
 from file_manager import FileManager
@@ -27,7 +27,10 @@ class ViewerWindow(QMainWindow):
         # ズーム倍率変更シグナルを接続
         self.image_view.zoom_changed.connect(self._on_zoom_changed)
 
-        # UIの最適化: 背景色黒、余計なフレームの排除
+        # UIの最適化: アプリアイコン、背景色黒、余計なフレームの排除
+        icon_path = os.path.join(os.path.dirname(__file__), "app_icon.ico")
+        if os.path.exists(icon_path):
+            self.setWindowIcon(QIcon(icon_path))
         self.setStyleSheet("background-color: black;")
         self.setAcceptDrops(True)
 
